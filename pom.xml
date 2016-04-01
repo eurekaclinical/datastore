@@ -14,10 +14,6 @@
     </parent>
     <inceptionYear>2016</inceptionYear>
     
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    
     <scm>
         <connection>scm:git:https://github.com/eurekaclinical/datastore.git</connection>
         <developerConnection>scm:git:https://github.com/eurekaclinical/datastore.git</developerConnection>
@@ -39,7 +35,7 @@
         <dependency>
             <groupId>org.eurekaclinical</groupId>
             <artifactId>javautil</artifactId>
-            <version>3.0-Alpha-7-SNAPSHOT</version>
+            <version>3.0-Alpha-7</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
