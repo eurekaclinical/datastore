@@ -9,8 +9,8 @@
     <packaging>jar</packaging>
     <parent>
         <groupId>org.eurekaclinical</groupId>
-        <artifactId>eurekaclinical-parent</artifactId>
-        <version>1</version>
+        <artifactId>eurekaclinical-parent-standard-deps</artifactId>
+        <version>2-Beta-3</version>
     </parent>
     <inceptionYear>2016</inceptionYear>
     
@@ -26,6 +26,15 @@
         <url>https://github.com/eurekaclinical/datastore/issues</url>
     </issueManagement>
     
+    <repositories>
+        <repository>
+            <id>oracleReleases</id>
+            <name>Oracle Released Java Packages</name>
+            <url>http://download.oracle.com/maven</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+    
     <dependencies>
         <dependency>
             <groupId>com.sleepycat</groupId>
@@ -35,12 +44,11 @@
         <dependency>
             <groupId>org.eurekaclinical</groupId>
             <artifactId>javautil</artifactId>
-            <version>3.0</version>
+            <version>4.0-Alpha-3</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
