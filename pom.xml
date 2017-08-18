@@ -26,15 +26,6 @@
         <url>https://github.com/eurekaclinical/datastore/issues</url>
     </issueManagement>
     
-    <repositories>
-        <repository>
-            <id>oracleReleases</id>
-            <name>Oracle Released Java Packages</name>
-            <url>http://download.oracle.com/maven</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
-    
     <dependencies>
         <dependency>
             <groupId>com.sleepycat</groupId>
