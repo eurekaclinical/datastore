@@ -22,11 +22,10 @@ package org.eurekaclinical.datastore;
 import java.util.logging.Logger;
 
 /**
- * Utility class for the {@link org.arp.javautil.datastore} class. Contains
+ * Utility class for the {@link org.eurekaclinical.datastore} package. Contains
  * logging tools, constants, and other utility methods.
  * 
  * @author Michel Mansour
- * 
  */
 public final class DataStoreUtil {
 

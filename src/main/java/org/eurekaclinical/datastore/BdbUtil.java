@@ -37,9 +37,9 @@ public class BdbUtil {
      * 
      * @param prefix a prefix for the temporary directory's name. Cannot be
      * <code>null</code>.
-     * 
      * @param suffix a suffix for the temporary directory's name.
      * @return the environment name to use.
+     * @param directory the parent directory to use.
      * 
      * @throws IOException if an error occurred in creating the temporary
      * directory.
