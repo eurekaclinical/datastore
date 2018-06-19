@@ -5,6 +5,11 @@
 It is a utility library that wraps Berkeley DB's key-value store.
 
 ## Version history
+Latest release: [![Latest release](https://maven-badges.herokuapp.com/maven-central/org.eurekaclinical/datastore/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eurekaclinical/datastore)
+
+### Version 2.0
+Minor cleanup.
+
 ### Version 1.0
 * Initial version, used for caching in Eureka! Clinical.
 
