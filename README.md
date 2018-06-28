@@ -6,6 +6,9 @@ It is a utility library that wraps Berkeley DB's key-value store.
 
 Latest release: [![Latest release](https://maven-badges.herokuapp.com/maven-central/org.eurekaclinical/datastore/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eurekaclinical/datastore)
 
+## Version 2.0.1
+Support a range of javautil versions.
+
 ## Version 2.0
 Minor cleanup.
 
