@@ -20,6 +20,7 @@ package org.eurekaclinical.datastore.bdb;
  * #L%
  */
 
+import org.eurekaclinical.datastore.DataStoreFactory;
 import com.sleepycat.bind.serial.StoredClassCatalog;
 import com.sleepycat.je.*;
 import java.io.File;
@@ -45,7 +46,7 @@ import java.util.logging.Logger;
  * @param <E> the key type to store.
  * @param <V> the value type to store.
  */
-public abstract class BdbStoreFactory<E, V> {
+public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
     private static final Logger LOGGER = 
             Logger.getLogger(BdbStoreFactory.class.getPackage().getName());
 
@@ -78,6 +79,7 @@ public abstract class BdbStoreFactory<E, V> {
      *
      * @throws IOException if an error occurred during shutdown.
      */
+    @Override
     public final void shutdown() throws IOException {
         this.shutdownHook.shutdown();
     }
@@ -89,24 +91,14 @@ public abstract class BdbStoreFactory<E, V> {
      *
      * @return the created and opened database.
      *
-     * @throws DatabaseExistsException if the database already exists and the
-     * DatabaseConfig ExclusiveCreate parameter is true.
-     * @throws DatabaseNotFoundException if the database does not exist and the
-     * DatabaseConfig AllowCreate parameter is false.
-     * @throws OperationFailureException if one of the Read Operation Failures
-     * occurs. If the database does not exist and the AllowCreate parameter is
-     * true, then one of the Write Operation Failures may also occur.
-     * @throws EnvironmentFailureException if an unexpected, internal or
-     * environment-wide failure occurs.
-     * @throws java.lang.IllegalStateException if this handle or the underlying
-     * environment has been closed.
-     * @throws java.lang.IllegalArgumentException if an invalid parameter is
-     * specified, for example, an invalid DatabaseConfig property.
+     * @throws IOException if an error occurs creating the database.
      */
-    public BdbMap<E, V> newInstance(String dbName) {
+    @Override
+    public BdbMap<E, V> newInstance(String dbName) throws IOException {
         if (dbName == null) {
             throw new IllegalArgumentException("dbName cannot be null");
         }
+        try {
         synchronized (this) {
             if (this.envInfo == null) {
                 createEnvironmentInfo();
@@ -118,6 +110,10 @@ public abstract class BdbStoreFactory<E, V> {
                         dbConfig);
         this.databaseHandles.add(databaseHandle);
         return new BdbMap<>(this.envInfo, databaseHandle);
+        } catch (OperationFailureException | EnvironmentFailureException
+                | IllegalStateException | IllegalArgumentException ex) {
+            throw new IOException(ex);
+        }
     }
 
     /**
