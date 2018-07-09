@@ -14,6 +14,7 @@ Latest release: [![Latest release](https://maven-badges.herokuapp.com/maven-cent
 * Moved the Berkeley DB classes into their own package.
 * Updated Berkeley DB to the current version (18.3.1), which is now called Oracle NoSQL.
 * Modernized logging.
+* Make data stores and their factories AutoCloseable.
 
 ## Version 2.0.1
 Support a range of javautil versions.
