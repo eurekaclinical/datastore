@@ -39,7 +39,7 @@ import java.util.Set;
  * 
  * @author Michel Mansour
  */
-public interface DataStore<K, V> extends Map<K, V> {
+public interface DataStore<K, V> extends Map<K, V>, AutoCloseable {
 
     /**
      * Performs any clean up of the store and shuts it down.
@@ -47,7 +47,8 @@ public interface DataStore<K, V> extends Map<K, V> {
      * @throws IOError if an error occurred shutting down the 
      * database.
      */
-    void shutdown();
+    @Override
+    void close();
 
     /**
      * Checks whether the store has already been shut down

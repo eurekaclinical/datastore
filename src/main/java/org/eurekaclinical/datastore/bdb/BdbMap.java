@@ -69,7 +69,7 @@ public class BdbMap<K, V> implements DataStore<K, V> {
     }
 
     @Override
-    public void shutdown() {
+    public void close() {
         synchronized (this.db) {
             if (!this.isClosed) {
                 try {
@@ -233,7 +233,7 @@ public class BdbMap<K, V> implements DataStore<K, V> {
     @Override
     protected void finalize() throws Throwable {
         try {
-            shutdown();
+            close();
         } finally {
             super.finalize();
         }

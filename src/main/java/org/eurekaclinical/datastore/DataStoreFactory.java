@@ -29,7 +29,7 @@ import java.io.IOException;
  * @param <E> the key to store.
  * @param <V> the value to store.
  */
-public interface DataStoreFactory<E, V> {
+public interface DataStoreFactory<E, V> extends AutoCloseable {
 
     /**
      * Opens a database, creating it if needed.
@@ -47,6 +47,7 @@ public interface DataStoreFactory<E, V> {
      *
      * @throws IOException if an error occurred during shutdown.
      */
-    void shutdown() throws IOException;
+    @Override
+    void close() throws IOException;
     
 }

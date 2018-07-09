@@ -80,7 +80,7 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
      * @throws IOException if an error occurred during shutdown.
      */
     @Override
-    public final void shutdown() throws IOException {
+    public final void close() throws IOException {
         this.shutdownHook.shutdown();
     }
 

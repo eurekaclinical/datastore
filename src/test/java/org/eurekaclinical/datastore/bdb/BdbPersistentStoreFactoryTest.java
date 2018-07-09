@@ -41,7 +41,7 @@ public class BdbPersistentStoreFactoryTest {
             store.put("foo", "bar");
             String bar = store.get("foo");
             Assert.assertEquals("bar", bar);
-            store.shutdown();
+            store.close();
         } finally {
             factory.closeAndRemoveAllDatabaseHandles();
         }
