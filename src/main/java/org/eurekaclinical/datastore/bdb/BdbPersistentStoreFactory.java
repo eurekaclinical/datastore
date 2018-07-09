@@ -1,8 +1,10 @@
-/*
+package org.eurekaclinical.datastore.bdb;
+
+/*-
  * #%L
- * JavaUtil
+ * Datastore
  * %%
- * Copyright (C) 2012 - 2013 Emory University
+ * Copyright (C) 2016 - 2018 Emory University
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +19,6 @@
  * limitations under the License.
  * #L%
  */
-package org.eurekaclinical.datastore;
 
 import com.sleepycat.bind.serial.StoredClassCatalog;
 import com.sleepycat.je.*;
@@ -28,16 +29,45 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Implementation of a Berkeley DB database factory. It automatically sets the
+ * cache size of created databases, makes created databases read-write, and
+ * sets databases to be persistent. Its databases will not be deleted when the
+ * Java virtual machine exits.
+ * 
  * @author Andrew Post
  */
 public class BdbPersistentStoreFactory<E, V> extends BdbStoreFactory<E, V> {
+    private static final Logger LOGGER = 
+            Logger.getLogger(BdbPersistentStoreFactory.class.getPackage().getName());
+    
     private static final String CLASS_CATALOG = "java_class_catalog";
     
+    /**
+     * Creates a persistent Berkeley DB factory that creates databases at the
+     * provided path.
+     * @param pathname the path at which to create databases. Cannot be
+     * <code>null</code>.
+     */
     public BdbPersistentStoreFactory(String pathname) {
         super(pathname, false);
     }
     
+    /**
+     * Creates a persistent class catalog.
+     * 
+     * @param env the environment to use.
+     * 
+     * @return the class catalog.
+     * 
+     * @throws OperationFailureException if one of the Read Operation Failures 
+     * occurs, or one of the Write Operation Failures occurs.
+     * @throws EnvironmentFailureException - if an unexpected, internal or 
+     * environment-wide failure occurs.
+     * @throws java.lang.IllegalStateException if the provided environment 
+     * has been closed.
+     * @throws java.lang.IllegalStateException if there are other open handles 
+     * for this database.
+     */
     @Override
     protected StoredClassCatalog createClassCatalog(Environment env)
             throws IllegalArgumentException, DatabaseException {
@@ -48,14 +78,20 @@ public class BdbPersistentStoreFactory<E, V> extends BdbStoreFactory<E, V> {
         return new StoredClassCatalog(catalogDb);
     }
 
+    /**
+     * Creates an environment config that allows object creation and supports
+     * transactions. In addition, it automatically calculates a cache size
+     * based on available memory.
+     * 
+     * @return a newly created environment config instance.
+     */
     @Override
     protected EnvironmentConfig createEnvConfig() {
-        Logger logger = DataStoreUtil.logger();
         EnvironmentConfig envConf = new EnvironmentConfig();
         envConf.setAllowCreate(true);
         envConf.setTransactional(true);
 
-        logger.log(Level.FINE, "Calculating cache size");
+        LOGGER.log(Level.FINE, "Calculating cache size");
         MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
         MemoryUsage memoryUsage = memoryMXBean.getHeapMemoryUsage();
         long max = memoryUsage.getMax();
@@ -63,10 +99,15 @@ public class BdbPersistentStoreFactory<E, V> extends BdbStoreFactory<E, V> {
         long available = max - used;
         long cacheSize = Math.round(available / 6.0);
         envConf.setCacheSize(cacheSize);
-        logger.log(Level.FINE, "Cache size set to {0}", cacheSize);
+        LOGGER.log(Level.FINE, "Cache size set to {0}", cacheSize);
         return envConf;
     }
 
+    /**
+     * Creates a database config for creating persistent databases.
+     * 
+     * @return a newly created database config instance.
+     */
     @Override
     protected DatabaseConfig createDatabaseConfig() {
         DatabaseConfig dbConfig = new DatabaseConfig();

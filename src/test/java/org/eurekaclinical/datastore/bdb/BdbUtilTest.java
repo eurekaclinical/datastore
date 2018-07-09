@@ -1,3 +1,5 @@
+package org.eurekaclinical.datastore.bdb;
+
 /*
  * #%L
  * JavaUtil
@@ -17,28 +19,25 @@
  * limitations under the License.
  * #L%
  */
-package org.eurekaclinical.datastore;
 
-import com.sleepycat.je.Environment;
-import com.sleepycat.je.StatsConfig;
 
-final class BdbStatsThread implements Runnable {
+import org.eurekaclinical.datastore.bdb.BdbUtil;
+import org.junit.Assert;
+import org.junit.Test;
 
-    private final Environment env;
+import java.io.IOException;
+import org.arp.javautil.io.FileUtil;
 
-    BdbStatsThread(Environment env) {
-        this.env = env;
-    }
+/**
+ *
+ * @author Andrew Post
+ */
+public class BdbUtilTest {
 
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                System.out.println(env.getStats(new StatsConfig()));
-                Thread.sleep(10000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }
+    @Test
+    public void testTempEnvironment() throws IOException {
+        String envName = BdbUtil.uniqueEnvironment("bdb-store-test", null,
+                FileUtil.getTempDirectory());
+        Assert.assertNotNull(envName);
     }
 }

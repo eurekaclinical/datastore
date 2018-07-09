@@ -1,8 +1,10 @@
-/*
+package org.eurekaclinical.datastore.bdb;
+
+/*-
  * #%L
- * JavaUtil
+ * Datastore
  * %%
- * Copyright (C) 2012 - 2013 Emory University
+ * Copyright (C) 2016 - 2018 Emory University
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +19,6 @@
  * limitations under the License.
  * #L%
  */
-package org.eurekaclinical.datastore;
 
 import com.sleepycat.je.Environment;
 import java.io.IOException;
@@ -28,26 +29,48 @@ import java.util.logging.Logger;
 import org.arp.javautil.io.FileUtil;
 
 /**
- *
+ * A Java virtual machine shutdown hook that shuts down known Berkeley DB
+ * databases.
+ * 
  * @author Andrew Post
  */
 public final class BdbStoreShutdownHook extends Thread {
+    private static final Logger LOGGER = 
+            Logger.getLogger(BdbStoreShutdownHook.class.getPackage().getName());
 
-    private final List<EnvironmentInfo> envInfos;
+    private final List<BdbEnvironmentInfo> envInfos;
     private final boolean deleteOnExit;
 
+    /**
+     * Creates the shutdown hook instance.
+     * 
+     * @param deleteOnExit whether known databases should be deleted after
+     * shutdown.
+     */
     BdbStoreShutdownHook(boolean deleteOnExit) {
         this.envInfos = new ArrayList<>();
         this.deleteOnExit = deleteOnExit;
     }
 
-    void addEnvironmentInfo(EnvironmentInfo environmentInfo) {
+    /**
+     * Adds an environment to check for databases to shutdown.
+     * 
+     * @param environmentInfo an environment.
+     */
+    void addEnvironmentInfo(BdbEnvironmentInfo environmentInfo) {
         this.envInfos.add(environmentInfo);
     }
 
+    /**
+     * Cleanly shuts down all databases in the provided environment.
+     * 
+     * @throws IOException if a database delete attempt failed.
+     * @throws DatabaseException if an error occurs while closing the class 
+     * catalog database.
+     */
     void shutdown() throws IOException {
         synchronized (this) {
-            for (EnvironmentInfo envInfo : this.envInfos) {
+            for (BdbEnvironmentInfo envInfo : this.envInfos) {
                 envInfo.getClassCatalog().close();
                 envInfo.closeAndRemoveAllDatabaseHandles();
                 
@@ -61,13 +84,15 @@ public final class BdbStoreShutdownHook extends Thread {
         }
     }
 
+    /**
+     * Runs the shutdown hook.
+     */
     @Override
     public void run() {
         try {
             shutdown();
         } catch (IOException ex) {
-            Logger logger = DataStoreUtil.logger();
-            logger.log(Level.SEVERE, "Error during shutdown", ex);
+            LOGGER.log(Level.SEVERE, "Error during shutdown", ex);
         }
     }
 }

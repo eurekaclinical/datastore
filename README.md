@@ -2,9 +2,18 @@
 [Georgia Clinical and Translational Science Alliance (Georgia CTSA)](http://www.georgiactsa.org), [Emory University](http://www.emory.edu), Atlanta, GA
 
 ## What does it do?
-It is a utility library that wraps Berkeley DB's key-value store.
+It is a utility library that wraps Berkeley DB's key-value store. Its design
+supports adding additional key-value store implementations in the future.
 
 Latest release: [![Latest release](https://maven-badges.herokuapp.com/maven-central/org.eurekaclinical/datastore/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eurekaclinical/datastore)
+
+## Version 3.0
+* Removed deprecated classes, which includes the caching functionality.
+* Redesigned exceptions that are thrown.
+* Documented exceptions that are thrown.
+* Moved the Berkeley DB classes into their own package.
+* Updated Berkeley DB to the current version (18.3.1), which is now called Oracle NoSQL.
+* Modernized logging.
 
 ## Version 2.0.1
 Support a range of javautil versions.

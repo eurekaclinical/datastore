@@ -1,4 +1,4 @@
-package org.eurekaclinical.datastore;
+package org.eurekaclinical.datastore.bdb;
 
 /*
  * #%L
@@ -19,25 +19,31 @@ package org.eurekaclinical.datastore;
  * limitations under the License.
  * #L%
  */
-
-
-import org.eurekaclinical.datastore.BdbUtil;
+import org.eurekaclinical.datastore.bdb.BdbUtil;
+import org.eurekaclinical.datastore.bdb.BdbPersistentStoreFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import org.arp.javautil.io.FileUtil;
+import org.eurekaclinical.datastore.DataStore;
 
-/**
- *
- * @author Andrew Post
- */
-public class BdbUtilTest {
+public class BdbPersistentStoreFactoryTest {
 
     @Test
-    public void testTempEnvironment() throws IOException {
+    public void testNewInstance() throws IOException {
         String envName = BdbUtil.uniqueEnvironment("bdb-store-test", null,
                 FileUtil.getTempDirectory());
-        Assert.assertNotNull(envName);
+        BdbPersistentStoreFactory<String, String> factory
+                = new BdbPersistentStoreFactory<>(envName);
+        try {
+            DataStore<String, String> store = factory.newInstance("BdbTest");
+            store.put("foo", "bar");
+            String bar = store.get("foo");
+            Assert.assertEquals("bar", bar);
+            store.shutdown();
+        } finally {
+            factory.closeAndRemoveAllDatabaseHandles();
+        }
     }
 }
