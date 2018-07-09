@@ -19,7 +19,6 @@ package org.eurekaclinical.datastore.bdb;
  * limitations under the License.
  * #L%
  */
-
 import org.eurekaclinical.datastore.DataStoreFactory;
 import com.sleepycat.bind.serial.StoredClassCatalog;
 import com.sleepycat.je.*;
@@ -47,8 +46,9 @@ import java.util.logging.Logger;
  * @param <V> the value type to store.
  */
 public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
-    private static final Logger LOGGER = 
-            Logger.getLogger(BdbStoreFactory.class.getPackage().getName());
+
+    private static final Logger LOGGER
+            = Logger.getLogger(BdbStoreFactory.class.getPackage().getName());
 
     private BdbEnvironmentInfo envInfo;
     private final File envFile;
@@ -99,17 +99,17 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
             throw new IllegalArgumentException("dbName cannot be null");
         }
         try {
-        synchronized (this) {
-            if (this.envInfo == null) {
-                createEnvironmentInfo();
+            synchronized (this) {
+                if (this.envInfo == null) {
+                    createEnvironmentInfo();
+                }
             }
-        }
-        DatabaseConfig dbConfig = createDatabaseConfig();
-        Database databaseHandle
-                = this.envInfo.getEnvironment().openDatabase(null, dbName,
-                        dbConfig);
-        this.databaseHandles.add(databaseHandle);
-        return new BdbMap<>(this.envInfo, databaseHandle);
+            DatabaseConfig dbConfig = createDatabaseConfig();
+            Database databaseHandle
+                    = this.envInfo.getEnvironment().openDatabase(null, dbName,
+                            dbConfig);
+            this.databaseHandles.add(databaseHandle);
+            return new BdbMap<>(this.envInfo, databaseHandle);
         } catch (OperationFailureException | EnvironmentFailureException
                 | IllegalStateException | IllegalArgumentException ex) {
             throw new IOException(ex);
@@ -139,14 +139,14 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
      * @param env a Berkeley DB environment instance.
      *
      * @return a new class catalog instance.
-     * 
-     * @throws OperationFailureException if one of the Read Operation Failures 
+     *
+     * @throws OperationFailureException if one of the Read Operation Failures
      * occurs, or one of the Write Operation Failures occurs.
-     * @throws EnvironmentFailureException - if an unexpected, internal or 
+     * @throws EnvironmentFailureException - if an unexpected, internal or
      * environment-wide failure occurs.
-     * @throws java.lang.IllegalStateException if the provided environment 
-     * has been closed.
-     * @throws java.lang.IllegalStateException if there are other open handles 
+     * @throws java.lang.IllegalStateException if the provided environment has
+     * been closed.
+     * @throws java.lang.IllegalStateException if there are other open handles
      * for this database.
      */
     protected abstract StoredClassCatalog createClassCatalog(Environment env);
@@ -155,8 +155,8 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
      * Closes a database that was previously created by this factory instance.
      *
      * @param databaseHandle the database to close.
-     * 
-     * @throws EnvironmentFailureException if an unexpected, internal or 
+     *
+     * @throws EnvironmentFailureException if an unexpected, internal or
      * environment-wide failure occurs.
      * @throws IllegalStateException if the database has been closed.
      */
@@ -178,8 +178,8 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
 
     /**
      * Closes all databases that this factory instance previously created.
-     * 
-     * @throws EnvironmentFailureException if an unexpected, internal or 
+     *
+     * @throws EnvironmentFailureException if an unexpected, internal or
      * environment-wide failure occurs.
      * @throws IllegalStateException if the database has been closed.
      */
@@ -207,32 +207,32 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
     }
 
     /**
-     * Creates a Berkeley DB database environment from the provided environment 
+     * Creates a Berkeley DB database environment from the provided environment
      * configuration.
-     * 
+     *
      * @return an environment instance.
-     * 
+     *
      * @throws SecurityException if the directory for storing the databases
      * could not be created.
-     * @throws EnvironmentNotFoundException if the environment does not exist 
-     * (does not contain at least one log file) and the EnvironmentConfig 
+     * @throws EnvironmentNotFoundException if the environment does not exist
+     * (does not contain at least one log file) and the EnvironmentConfig
      * AllowCreate parameter is false.
-     * @throws EnvironmentLockedException when an environment cannot be opened 
-     * for write access because another process has the same environment open 
-     * for write access. Warning: This exception should be handled when an 
+     * @throws EnvironmentLockedException when an environment cannot be opened
+     * for write access because another process has the same environment open
+     * for write access. Warning: This exception should be handled when an
      * environment is opened by more than one process.
-     * @throws VersionMismatchException when the existing log is not 
-     * compatible with the version of JE that is running. This occurs when a 
-     * later version of JE was used to create the log. Warning: This exception 
-     * should be handled when more than one version of JE may be used to access 
-     * an environment.
-     * @throws EnvironmentFailureException if an unexpected, internal or 
+     * @throws VersionMismatchException when the existing log is not compatible
+     * with the version of JE that is running. This occurs when a later version
+     * of JE was used to create the log. Warning: This exception should be
+     * handled when more than one version of JE may be used to access an
+     * environment.
+     * @throws EnvironmentFailureException if an unexpected, internal or
      * environment-wide failure occurs.
-     * @throws java.lang.UnsupportedOperationException if this environment was 
+     * @throws java.lang.UnsupportedOperationException if this environment was
      * previously opened for replication and is not being opened read-only.
-     * @throws java.lang.IllegalArgumentException if an invalid parameter is 
+     * @throws java.lang.IllegalArgumentException if an invalid parameter is
      * specified, for example, an invalid EnvironmentConfig parameter.
-     * 
+     *
      */
     private Environment createEnvironment() {
         EnvironmentConfig envConf = createEnvConfig();
