@@ -20,6 +20,7 @@ package org.eurekaclinical.datastore.bdb;
  * #L%
  */
 
+import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,7 +72,11 @@ public final class BdbStoreShutdownHook extends Thread {
     void shutdown() throws IOException {
         synchronized (this) {
             for (BdbEnvironmentInfo envInfo : this.envInfos) {
-                envInfo.getClassCatalog().close();
+                try {
+                    envInfo.getClassCatalog().close();
+                } catch (DatabaseException ignore) {
+                    LOGGER.log(Level.SEVERE, "Failure closing class catalog", ignore);
+                }
                 envInfo.closeAndRemoveAllDatabaseHandles();
                 
                 try (Environment env = envInfo.getEnvironment()) {

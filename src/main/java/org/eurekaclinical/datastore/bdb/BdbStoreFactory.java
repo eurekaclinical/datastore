@@ -188,12 +188,8 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
             try {
                 databaseHandle.close();
             } catch (EnvironmentFailureException | IllegalStateException ex) {
-                try {
-                    LOGGER.log(Level.SEVERE,
-                            "Error closing database {0}", databaseHandle.getDatabaseName());
-                } catch (EnvironmentFailureException | IllegalStateException ex2) {
-                    ex.addSuppressed(ex2);
-                }
+                LOGGER.log(Level.SEVERE,
+                        "Error closing databases", ex);
             }
         }
         this.databaseHandles.clear();
