@@ -1,10 +1,10 @@
 package org.eurekaclinical.datastore.bdb;
 
-/*
+/*-
  * #%L
- * JavaUtil
+ * Datastore
  * %%
- * Copyright (C) 2012 - 2013 Emory University
+ * Copyright (C) 2016 - 2018 Emory University
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ package org.eurekaclinical.datastore.bdb;
  * #L%
  */
 
-
-import org.eurekaclinical.datastore.bdb.BdbUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

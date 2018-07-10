@@ -21,7 +21,14 @@ package org.eurekaclinical.datastore.bdb;
  */
 import org.eurekaclinical.datastore.DataStoreFactory;
 import com.sleepycat.bind.serial.StoredClassCatalog;
-import com.sleepycat.je.*;
+import com.sleepycat.je.Database;
+import com.sleepycat.je.DatabaseConfig;
+import com.sleepycat.je.DatabaseExistsException;
+import com.sleepycat.je.DatabaseNotFoundException;
+import com.sleepycat.je.Environment;
+import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.EnvironmentFailureException;
+import com.sleepycat.je.OperationFailureException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,27 +81,8 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);
     }
 
-    /**
-     * Cleanly shuts down the store and cleans up associated resources.
-     *
-     * @throws IOException if an error occurred during shutdown.
-     */
     @Override
-    public final void close() throws IOException {
-        this.shutdownHook.shutdown();
-    }
-
-    /**
-     * Opens a database, creating it if needed.
-     *
-     * @param dbName the database's name.
-     *
-     * @return the created and opened database.
-     *
-     * @throws IOException if an error occurs creating the database.
-     */
-    @Override
-    public BdbMap<E, V> newInstance(String dbName) throws IOException {
+    public BdbMap<E, V> getInstance(String dbName) throws IOException {
         if (dbName == null) {
             throw new IllegalArgumentException("dbName cannot be null");
         }
@@ -104,29 +92,29 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
                     createEnvironmentInfo();
                 }
             }
-            DatabaseConfig dbConfig = createDatabaseConfig();
-            Database databaseHandle
-                    = this.envInfo.getEnvironment().openDatabase(null, dbName,
-                            dbConfig);
-            this.databaseHandles.add(databaseHandle);
-            return new BdbMap<>(this.envInfo, databaseHandle);
+            return createOrOpenDatabase(dbName);
         } catch (OperationFailureException | EnvironmentFailureException
                 | IllegalStateException | IllegalArgumentException ex) {
             throw new IOException(ex);
         }
     }
 
+    @Override
+    public final void close() throws IOException {
+        this.shutdownHook.shutdown();
+    }
+
     /**
      * Returns a new environment config instance. This should be called only by
-     * the {@link #newInstance(java.lang.String) } method.
+     * the {@link #getInstance(java.lang.String) } method.
      *
      * @return a new environment config instance.
      */
     protected abstract EnvironmentConfig createEnvConfig();
 
     /**
-     * Returns a new database config instance. This should be called only by the {@link #newInstance(java.lang.String)
-     * } method.
+     * Returns a new database config instance. This should be called only by 
+     * the {@link #getInstance(java.lang.String)} method.
      *
      * @return a new database config instance.
      */
@@ -134,7 +122,7 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
 
     /**
      * Returns a new class catalog instance. This should be called only by the 
-     * {@link #newInstance(java.lang.String) } method.
+     * {@link #getInstance(java.lang.String) } method.
      *
      * @param env a Berkeley DB environment instance.
      *
@@ -241,4 +229,28 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
 
         return new Environment(this.envFile, envConf);
     }
+
+    private boolean databaseExists(String dbName) {
+        Environment environment = this.envInfo.getEnvironment();
+        boolean found = false;
+        for (String nm : environment.getDatabaseNames()) {
+            if (dbName.equals(nm)) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
+    
+    private BdbMap<E, V> createOrOpenDatabase(String dbName) 
+            throws IllegalArgumentException, IllegalStateException, 
+            DatabaseNotFoundException, DatabaseExistsException {
+        DatabaseConfig dbConfig = createDatabaseConfig();
+        Database databaseHandle
+                = this.envInfo.getEnvironment().openDatabase(null, dbName,
+                        dbConfig);
+        this.databaseHandles.add(databaseHandle);
+        return new BdbMap<>(this.envInfo, databaseHandle);
+    }
+
 }

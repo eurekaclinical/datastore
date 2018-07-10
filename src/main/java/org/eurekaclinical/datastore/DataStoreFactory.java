@@ -30,17 +30,17 @@ import java.io.IOException;
  * @param <V> the value to store.
  */
 public interface DataStoreFactory<E, V> extends AutoCloseable {
-
+    
     /**
-     * Opens a database, creating it if needed.
+     * Opens a data store, creating it if needed.
      *
-     * @param dbName the database's name.
+     * @param dbName the data store's name.
      *
-     * @return the created and opened database.
+     * @return the opened data store.
      *
-     * @throws IOException if an error occurs creating the database.
+     * @throws IOException if an error occurs while getting or creating the data store.
      */
-    DataStore<E, V> newInstance(String dbName) throws IOException;
+    DataStore<E, V> getInstance(String dbName) throws IOException;
 
     /**
      * Cleanly shuts down the store and cleans up associated resources.

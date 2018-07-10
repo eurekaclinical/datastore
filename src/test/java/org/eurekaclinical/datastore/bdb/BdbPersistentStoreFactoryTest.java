@@ -1,10 +1,10 @@
 package org.eurekaclinical.datastore.bdb;
 
-/*
+/*-
  * #%L
- * JavaUtil
+ * Datastore
  * %%
- * Copyright (C) 2012 - 2013 Emory University
+ * Copyright (C) 2016 - 2018 Emory University
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@ package org.eurekaclinical.datastore.bdb;
  * limitations under the License.
  * #L%
  */
-import org.eurekaclinical.datastore.bdb.BdbUtil;
-import org.eurekaclinical.datastore.bdb.BdbPersistentStoreFactory;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,7 +36,7 @@ public class BdbPersistentStoreFactoryTest {
         BdbPersistentStoreFactory<String, String> factory
                 = new BdbPersistentStoreFactory<>(envName);
         try {
-            DataStore<String, String> store = factory.newInstance("BdbTest");
+            DataStore<String, String> store = factory.getInstance("BdbTest");
             store.put("foo", "bar");
             String bar = store.get("foo");
             Assert.assertEquals("bar", bar);
