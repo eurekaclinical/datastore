@@ -100,6 +100,29 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
     }
 
     @Override
+    public boolean exists(String dbName) throws IOException {
+        try {
+            synchronized (this) {
+                if (this.envInfo == null) {
+                    createEnvironmentInfo();
+                }
+            }
+            Environment environment = this.envInfo.getEnvironment();
+            boolean found = false;
+            for (String nm : environment.getDatabaseNames()) {
+                if (dbName.equals(nm)) {
+                    found = true;
+                    break;
+                }
+            }
+            return found;
+        } catch (OperationFailureException | EnvironmentFailureException
+                | IllegalStateException | IllegalArgumentException ex) {
+            throw new IOException(ex);
+        }
+    }
+
+    @Override
     public final void close() throws IOException {
         this.shutdownHook.shutdown();
     }
@@ -113,8 +136,8 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
     protected abstract EnvironmentConfig createEnvConfig();
 
     /**
-     * Returns a new database config instance. This should be called only by 
-     * the {@link #getInstance(java.lang.String)} method.
+     * Returns a new database config instance. This should be called only by the
+     * {@link #getInstance(java.lang.String)} method.
      *
      * @return a new database config instance.
      */
@@ -230,20 +253,8 @@ public abstract class BdbStoreFactory<E, V> implements DataStoreFactory<E, V> {
         return new Environment(this.envFile, envConf);
     }
 
-    private boolean databaseExists(String dbName) {
-        Environment environment = this.envInfo.getEnvironment();
-        boolean found = false;
-        for (String nm : environment.getDatabaseNames()) {
-            if (dbName.equals(nm)) {
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }
-    
-    private BdbMap<E, V> createOrOpenDatabase(String dbName) 
-            throws IllegalArgumentException, IllegalStateException, 
+    private BdbMap<E, V> createOrOpenDatabase(String dbName)
+            throws IllegalArgumentException, IllegalStateException,
             DatabaseNotFoundException, DatabaseExistsException {
         DatabaseConfig dbConfig = createDatabaseConfig();
         Database databaseHandle

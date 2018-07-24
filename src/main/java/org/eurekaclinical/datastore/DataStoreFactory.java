@@ -32,6 +32,15 @@ import java.io.IOException;
 public interface DataStoreFactory<E, V> extends AutoCloseable {
     
     /**
+     * Checks whether a database with the given name exists.
+     * 
+     * @param dbName the name of the database to check.
+     * @return <code>true</code> or <code>false</code>.
+     * @throws java.io.IOException if an error occurs while accessing the data store.
+     */
+    boolean exists(String dbName) throws IOException;
+    
+    /**
      * Opens a data store, creating it if needed.
      *
      * @param dbName the data store's name.
