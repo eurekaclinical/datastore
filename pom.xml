@@ -5,7 +5,7 @@
     <artifactId>datastore</artifactId>
     <name>Datastore</name>
     <description>Implements a key-value store API using Berkeley DB</description>
-    <version>3.0</version>
+    <version>3.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <parent>
         <groupId>org.eurekaclinical</groupId>
@@ -18,7 +18,7 @@
         <connection>scm:git:https://github.com/eurekaclinical/datastore.git</connection>
         <developerConnection>scm:git:https://github.com/eurekaclinical/datastore.git</developerConnection>
         <url>https://github.com/eurekaclinical/datastore.git</url>
-        <tag>datastore-3.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
