@@ -20,7 +20,11 @@
         <url>https://github.com/eurekaclinical/datastore.git</url>
         <tag>HEAD</tag>
     </scm>
-
+	
+	<properties>
+    	<maven.javadoc.skip>true</maven.javadoc.skip>
+    </properties>
+    
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/eurekaclinical/datastore/issues</url>
