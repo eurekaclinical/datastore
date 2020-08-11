@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.eurekaclinical</groupId>
         <artifactId>eurekaclinical-parent-standard-deps</artifactId>
-        <version>4-Alpha-4-SNAPSHOT</version>
+        <version>4-Alpha-4</version>
     </parent>
     <inceptionYear>2016</inceptionYear>
     
@@ -21,9 +21,9 @@
         <tag>HEAD</tag>
     </scm>
 	
-	<properties>
+	<!-- properties>
     	<maven.javadoc.skip>true</maven.javadoc.skip>
-    </properties>
+    </properties-->
     
     <issueManagement>
         <system>GitHub</system>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.eurekaclinical</groupId>
             <artifactId>javautil</artifactId>
-            <version>4.5-SNAPSHOT</version>
+            <version>4.5</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
